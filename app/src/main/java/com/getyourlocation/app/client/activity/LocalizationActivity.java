@@ -1,6 +1,7 @@
 package com.getyourlocation.app.client.activity;
 
 import android.content.Intent;
+import android.graphics.BitmapRegionDecoder;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -21,14 +22,15 @@ import sysu.mobile.limk.library.Position;
 public class LocalizationActivity extends AppCompatActivity {
     private static final String TAG = "IndoorMapActivity";
     private TextView infoTxt;
-    private final static int REQUEST_CODE=1;
+    private final static int REQ_POSITION = 1;
     private MapView mapView;
+    private float mapHeight;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_indoor_map);
+        setContentView(R.layout.activity_localization);
         infoTxt = (TextView) findViewById(R.id.indoorMap_infoTxt);
         mapView = (MapView) findViewById(R.id.indoorMap_mapView);
         showLocation(652, 684);
@@ -40,30 +42,30 @@ public class LocalizationActivity extends AppCompatActivity {
                 Intent intent=new Intent();
                 intent.setClass(LocalizationActivity.this, PhotoActivity.class);
                 //intent.putExtra("str", "Intent Demo");
-                startActivityForResult(intent, REQUEST_CODE);
+                startActivityForResult(intent, REQ_POSITION);
             }
         });
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data)
-    {
-        if (requestCode==REQUEST_CODE)
-        {
-            if (resultCode==testActivity.RESULT_CODE)
-            {
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQ_POSITION) {
+            if (resultCode == PhotoActivity.RES_POSITION) {
                 Bundle bundle=data.getExtras();
                 float x = bundle.getFloat("x");
                 float y = bundle.getFloat("y");
-                showLocation(x, y);
+                showLocation(x, mapHeight - y);
             }
         }
     }
 
-    private void showLocation(float x, float y)
-    {
+    private void showLocation(float x, float y) {
         try {
             mapView.initNewMap(getAssets().open(Constant.FILENAME_MAP), 1, 0, new Position(x, y));
+            BitmapRegionDecoder mMapDecoder = BitmapRegionDecoder.newInstance(
+                    getAssets().open(Constant.FILENAME_MAP), false);
+            mapHeight = mMapDecoder.getHeight();
+            System.out.println("mapHeight is:"+mMapDecoder.getHeight());
         } catch (IOException e) {
             e.printStackTrace();
         }

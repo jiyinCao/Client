@@ -31,7 +31,7 @@ import java.util.List;
 public class CollectDataActivity extends AppCompatActivity {
     private static final String TAG = "CollectDataActivity";
     private static final String STORAGE_DIR = "GYL-Data";
-    private static final String FRAMES_DIR = "frames";
+    private static final String FRAMES_DIR = "JPEGImages";
     private static final String SENSOR_FILENAME = "sensor.csv";
 
     private TextView infoTxt;
@@ -187,7 +187,7 @@ public class CollectDataActivity extends AppCompatActivity {
         recordBtn.setText("Start");
         isRecording = false;
         saveSensorDataToFile();
-        infoTxt.setText("Data saved to " + framesDir.getParent());
+        infoTxt.setText("Frame count: " + (frameCnt - 1) + "\nData saved to " + framesDir.getParent());
     }
 
     private void saveSensorDataToFile() {
